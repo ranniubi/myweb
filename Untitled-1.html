@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>我的个性化个人网站</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        header, nav, main, aside, footer { padding: 20px; }
+        header { background: #4CAF50; color: white; }
+        nav { background: #f0f0f0; }
+        main { display: flex; }
+        section { flex: 3; margin-right: 20px; }
+        aside { flex: 1; background: #f9f9f9; }
+        .ad { margin: 10px 0; }
+        .friend-links a { margin-right: 10px; }
+        .message-list { max-height: 150px; overflow-y: auto; border: 1px solid #ccc; padding: 5px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>欢迎来到我的个人网站</h1>
+        <p>个性化展示 | 文章分享 | 图片/视频 | 留言服务</p>
+    </header>
+    <nav>
+        <a href="#info">个人信息</a> |
+        <a href="#share">文章/图片/视频分享</a> |
+        <a href="#message">留言</a> |
+        <a href="#friends">友情连接</a>
+    </nav>
+    <main>
+        <section>
+            <!-- 1. 个人信息展示 -->
+            <h2 id="info">个人信息</h2>
+            <p>姓名：张三</p>
+            <p>简介：热爱编程与摄影，喜欢旅行和美食。</p>
+            <p>爱好：编程、摄影、旅行、音乐</p>
+            <h3>每日文幸</h3>
+            <blockquote id="daily-quote">“生活不止眼前的苟且，还有诗和远方。”</blockquote>
+            <h3>图片/视频分享</h3>
+            <img src="https://via.placeholder.com/300x200" alt="我的照片">
+            <video width="320" height="240" controls>
+                <source src="sample.mp4" type="video/mp4">
+                您的浏览器不支持视频播放。
+            </video>
+            <hr>
+            <!-- 2. 文章/图片/视频分享与查询 -->
+            <h2 id="share">分享区</h2>
+            <input type="text" id="search-title" placeholder="按标题搜索">
+            <input type="date" id="search-date">
+            <button onclick="searchShares()">查询</button>
+            <ul id="share-list"></ul>
+            <hr>
+            <!-- 3. 留言服务 -->
+            <h2 id="message">留言板</h2>
+            <div class="message-list" id="message-list"></div>
+            <input type="text" id="msg-name" placeholder="昵称">
+            <input type="text" id="msg-content" placeholder="留言内容">
+            <button onclick="addMessage()">留言</button>
+        </section>
+        <aside>
+            <!-- 5. 广告图片/视频 -->
+            <div class="ad">
+                <h3>广告推荐</h3>
+                <img src="https://via.placeholder.com/200x100?text=广告" alt="广告图片">
+                <video width="200" controls>
+                    <source src="ad.mp4" type="video/mp4">
+                </video>
+            </div>
+            <!-- 4. 最新文章/图片/视频动态提示 -->
+            <div>
+                <h3>最新动态</h3>
+                <ul id="latest-list"></ul>
+            </div>
+            <!-- 6. 友情连接 -->
+            <div class="friend-links" id="friends">
+                <h3>友情连接</h3>
+                <a href="https://www.baidu.com" target="_blank">百度</a>
+                <a href="https://www.github.com" target="_blank">GitHub</a>
+            </div>
+        </aside>
+    </main>
+    <footer>
+        &copy; 2025 张三的个人网站
+    </footer>
+    <script>
+        // 示例数据
+        const shares = [
+            {title: "我的第一篇文章", date: "2025-05-28", type: "article", link: "#", desc: "关于生活的思考"},
+            {title: "旅行照片分享", date: "2025-05-29", type: "image", link: "#", desc: "云南之旅"},
+            {title: "学习编程视频", date: "2025-05-30", type: "video", link: "#", desc: "JavaScript入门"}
+        ];
+
+        // 动态显示分享列表
+        function renderShares(list) {
+            const ul = document.getElementById('share-list');
+            ul.innerHTML = '';
+            list.forEach(item => {
+                ul.innerHTML += `<li>
+                    <strong>${item.title}</strong> (${item.date}) [${item.type}]<br>
+                    ${item.desc} <a href="${item.link}">访问</a>
+                </li>`;
+            });
+        }
+        renderShares(shares);
+
+        // 查询功能
+        function searchShares() {
+            const title = document.getElementById('search-title').value.trim();
+            const date = document.getElementById('search-date').value;
+            const filtered = shares.filter(item => {
+                return (!title || item.title.includes(title)) &&
+                       (!date || item.date === date);
+            });
+            renderShares(filtered);
+        }
+
+        // 最新动态（按日期排序，显示最新3条）
+        function renderLatest() {
+            const latest = [...shares].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3);
+            const ul = document.getElementById('latest-list');
+            ul.innerHTML = '';
+            latest.forEach(item => {
+                ul.innerHTML += `<li>
+                    <a href="${item.link}">${item.title}</a> (${item.date})
+                </li>`;
+            });
+        }
+        renderLatest();
+
+        // 留言服务（本地存储）
+        function addMessage() {
+            const name = document.getElementById('msg-name').value.trim() || '匿名';
+            const content = document.getElementById('msg-content').value.trim();
+            if (!content) return;
+            const msgList = JSON.parse(localStorage.getItem('messages') || '[]');
+            msgList.push({name, content, time: new Date().toLocaleString()});
+            localStorage.setItem('messages', JSON.stringify(msgList));
+            renderMessages();
+            document.getElementById('msg-content').value = '';
+        }
+        function renderMessages() {
+            const msgList = JSON.parse(localStorage.getItem('messages') || '[]');
+            const div = document.getElementById('message-list');
+            div.innerHTML = msgList.map(msg => `<div><b>${msg.name}</b>：${msg.content} <small>(${msg.time})</small></div>`).join('');
+        }
+        renderMessages();
+    </script>
+</body>
+</html>
