@@ -51,6 +51,17 @@
             <ul id="share-list"></ul>
             <hr>
             <!-- 3. 留言服务 -->
+            <!-- 在需要显示留言的位置插入 -->
+<div id="vcomments"></div>
+<script src="https://unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: '#vcomments',
+    appId: 'xk3JCPspEDlOjSP0KL4Qkw9B-gzGzoHsz',
+    appKey: 'jWaOnC9fwXfYQIGPtQEEK7l5',
+    placeholder: '欢迎留言！'
+  })
+</script>
             <h2 id="message">留言板</h2>
             <div class="message-list" id="message-list"></div>
             <input type="text" id="msg-name" placeholder="昵称">
