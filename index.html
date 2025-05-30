@@ -138,23 +138,6 @@
         }
         renderLatest();
 
-        // 留言服务（本地存储）
-        function addMessage() {
-            const name = document.getElementById('msg-name').value.trim() || '匿名';
-            const content = document.getElementById('msg-content').value.trim();
-            if (!content) return;
-            const msgList = JSON.parse(localStorage.getItem('messages') || '[]');
-            msgList.push({name, content, time: new Date().toLocaleString()});
-            localStorage.setItem('messages', JSON.stringify(msgList));
-            renderMessages();
-            document.getElementById('msg-content').value = '';
-        }
-        function renderMessages() {
-            const msgList = JSON.parse(localStorage.getItem('messages') || '[]');
-            const div = document.getElementById('message-list');
-            div.innerHTML = msgList.map(msg => `<div><b>${msg.name}</b>：${msg.content} <small>(${msg.time})</small></div>`).join('');
-        }
-        renderMessages();
     </script>
 </body>
 </html>
